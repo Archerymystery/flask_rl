@@ -5,10 +5,19 @@
     </head>
     <body>
         <h3>Список справ</h3>
+        <form action="/add" method="post">
+            <input type="text" name="title" required>
+            <button type="submit">Додати</button>
+        </form>
         <ul>
             {% for task in tasks %}
                 <li>
-                    {{ task.title }}
+                    {% if task.completed %}
+                        <span style="text-decoration: line-through">{{ task.title }}</span>
+                    {% else %}
+                        {{ task.title }}
+                    {% endif %}
+                    [<a href="{{ url_for('complete_task', task_id=task.id) }}">виконано</a>]
                 </li>
             {% endfor %}
         </ul>
