@@ -2,26 +2,33 @@
 <html lang="uk">
     <head>
         <title>Список справ</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     </head>
     <body>
-        <h3>Список справ</h3>
-        <form action="/add" method="post">
-            <input type="text" name="title" required>
-            <button type="submit">Додати</button>
-        </form>
-        <ul>
-            {% for task in tasks %}
-                <li>
-                    {% if task.completed %}
-                        <span style="text-decoration: line-through">{{ task.title }}</span>
-                    {% else %}
-                        {{ task.title }}
-                    {% endif %}
-                    [<a href="{{ url_for('complete_task', task_id=task.id) }}">виконати</a>
-                    <a href="{{ url_for('edit_task', task_id=task.id) }}">редагувати</a>
-                    <a href="{{ url_for('delete_task', task_id=task.id) }}">видалити</a>]
-                </li>
-            {% endfor %}
-        </ul>
+        <div class="box">
+            <h3>Список справ</h3>
+            <form action="/add" method="post">
+                <input type="text" name="title" required><button type="submit" >Додати</button>
+            </form>
+            <ul>
+                {% for task in tasks %}
+                    <li>
+                        {% if task.completed %}
+                            <a href="{{ url_for('complete_task', task_id=task.id) }}"class="completed"><i class="fa-regular fa-square-check"></i></a>
+                            <a class="completed"><span style="text-decoration: line-through">{{ task.title }}</span></a>
+                        
+                        {% else %}
+                            <a href="{{ url_for('complete_task', task_id=task.id) }}" ><i class="fa-regular fa-square"></i></a>
+                            {{ task.title }}
+                            
+                        {% endif %}
+                        
+                        <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a href="{{ url_for('delete_task', task_id=task.id) }}"class="trash"><i class="fa-solid fa-trash-can"></i></a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </body>
 </html>
