@@ -3,12 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <title>Редагувати справу</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     </head>
     <body>
+        <div class="box">
         <h3>Редагувати справу</h3>
         <form method="post">
             <input type="text" name="title" value="{{ task.title }}" required>
             <button type="submit">Збергти</button>
         </form>
+    </div>
     </body>
 </html>
