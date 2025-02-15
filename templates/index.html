@@ -33,17 +33,17 @@
                         <ul>
                             {% for file in task.files %}
                                 <li>
-                                    <a href="{{ url_for('uploads', filename=file.filename) }}" target="_blank">Переглянути файл</a><br>
+                                    <a href="{{ url_for('static', filename='uploads/' + file.filename) }}" target="_blank">Переглянути файл</a><br>
                                     {% if file.filename.endswith(('mp3', 'wav', 'ogg', 'flac')) %}
                                         <!-- Плеєр для аудио -->
                                         <audio controls>
-                                            <source src="{{ url_for('uploads', filename=file.filename) }}" type="audio/{{ file.filename.split('.')[-1] }}">
+                                            <source src="{{ url_for('static', filename='uploads/' + file.filename) }}" type="audio/{{ file.filename.split('.')[-1] }}">
                                             Ваш браузер не підтримує аудіо.
                                         </audio>
                                     {% elif file.filename.endswith(('mp4', 'avi', 'mov', 'mkv')) %}
                                         <!-- Плеєр для відео -->
                                         <video controls>
-                                            <source src="{{ url_for('uploads', filename=file.filename) }}" type="video/{{ file.filename.split('.')[-1] }}">
+                                            <source src="{{ url_for('static', filename='uploads/' + file.filename) }}" type="video/{{ file.filename.split('.')[-1] }}">
                                             Ваш браузер не підтримує відео.
                                         </video>
                                     {% endif %}

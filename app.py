@@ -38,6 +38,9 @@ def add_task():
                 # filename = f"{timestamp}_{filename}"
 
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                    os.makedirs(app.config['UPLOAD_FOLDER'])
+
                 file.save(file_path)
                 new_file = TaskFile(filename=filename, task=new_task)
                 db.session.add(new_file)
