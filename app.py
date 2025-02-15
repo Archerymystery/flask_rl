@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
+from werkzeug.utils import secure_filename
+import os
 
-from models import Task, db
+from models import db, Task, TaskFile
 from config import Config
 
 
@@ -23,9 +25,23 @@ def index():
 
 @app.route("/add", methods=["POST"])
 def add_task():
-    title = request.form["title"].strip()
+    title = request.form.get("title", "").strip()
     if title:
         new_task = Task(title=title)
+        files = request.files.getlist("files")
+        for file in files:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+
+                # На випадок, якщо ми маємо кілька файлів з однаковими іменами
+                # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                # filename = f"{timestamp}_{filename}"
+
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+                new_file = TaskFile(filename=filename, task=new_task)
+                db.session.add(new_file)
+
         db.session.add(new_task)
         db.session.commit()
     return redirect(url_for("index"))
@@ -50,7 +66,7 @@ def delete_task(task_id):
 def edit_task(task_id):
     task = Task.query.get(task_id)
     if task and request.method == "POST":
-        task.title = request.form["title"].strip()
+        task.title = request.form.get("title", "").strip()
         if task.title:
             db.session.commit()
             return redirect(url_for("index"))
