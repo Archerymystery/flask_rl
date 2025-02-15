@@ -12,6 +12,10 @@ with app.app_context():
     db.create_all()
 
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in Config.ALLOWED_EXTENSIONS
+
+
 @app.route("/")
 def index():
     tasks = Task.query.all()
