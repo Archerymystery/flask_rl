@@ -49,10 +49,9 @@ def delete_task(task_id):
 @app.route("/edit/<int:task_id>", methods=["GET", "POST"])
 def edit_task(task_id):
     task = Task.query.get(task_id)
-    if task:
-        if request.method == "POST":
-            task.title = request.form["title"].strip()
-            if task.title:
-                db.session.commit()
-                return redirect(url_for("index"))
+    if task and request.method == "POST":
+        task.title = request.form["title"].strip()
+        if task.title:
+            db.session.commit()
+            return redirect(url_for("index"))
     return render_template("edit.html", task=task)
