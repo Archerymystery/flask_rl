@@ -1,3 +1,4 @@
+import datetime
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
@@ -34,9 +35,8 @@ def add_task():
                 filename = secure_filename(file.filename)
 
                 # На випадок, якщо ми маємо кілька файлів з однаковими іменами
-                # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                # filename = f"{timestamp}_{filename}"
-
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"{timestamp}_{filename}"
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 if not os.path.exists(app.config['UPLOAD_FOLDER']):
                     os.makedirs(app.config['UPLOAD_FOLDER'])
@@ -74,3 +74,5 @@ def edit_task(task_id):
             db.session.commit()
             return redirect(url_for("index"))
     return render_template("edit.html", task=task)
+if __name__ =="__main__":
+    app.run(debug=True)

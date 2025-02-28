@@ -4,13 +4,27 @@
         <title>Список справ</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <script src="{{ url_for('static', filename='jsmediatags.min.js') }}"></script> 
+        <script src="{{ url_for('static', filename='main.js') }}"></script>
+        
     </head>
-    <body>
+    <body onload="ev">
+        <div class="file" id="file">
+            <img id="img" src="" >
+            <audio controls id="audio" class="media">
+                <source id="sourceA" src="" type="">
+                Ваш браузер не підтримує аудіо.
+            </audio>
+            <video controls id="video">
+                <source  id="sourceV" src="" type="">
+                Ваш браузер не підтримує відео.
+            </video>
+        </div>
         <div class="box">
             <h3>Список справ</h3>
             <form action="/add" method="post" enctype="multipart/form-data">
                 <input type="text" name="title" placeholder="Нова справа" required>
-                <input type="file" name="files">
+                <input type="file" name="files" multiple>
                 <button type="submit" >Додати</button>
             </form>
             <ul>
@@ -32,27 +46,34 @@
                         {% if task.files %}
                         <ul>
                             {% for file in task.files %}
-                                <li>
-                                    <a href="{{ url_for('static', filename='uploads/' + file.filename) }}" target="_blank">Переглянути файл</a><br>
+                                <div class="сontainer">
+
+                                
+                                    <!-- <a href="{{ url_for('static', filename='uploads/' + file.filename) }}" target="_blank">Переглянути файл</a><br> -->
 
                                     {% if file.filename.endswith(('jpg', 'jpeg', 'png', 'gif', 'webp')) %}
+                                    <div class="tile" onclick="Show('{{ url_for('static', filename='uploads/' + file.filename) }}','img')">
                                         <img src="{{ url_for('static', filename='uploads/' + file.filename) }}"
-                                             alt="Зображення" class="media">
+                                        alt="Зображення" class="media">
+                                    </div>
+                         
 
                                     {% elif file.filename.endswith(('mp3', 'wav', 'ogg', 'flac')) %}
                                         <!-- Плеєр для аудио -->
-                                        <audio controls class="media">
-                                            <source src="{{ url_for('static', filename='uploads/' + file.filename) }}" type="audio/{{ file.filename.split('.')[-1] }}">
-                                            Ваш браузер не підтримує аудіо.
-                                        </audio>
+                                    <div class="tile" onclick="Show('{{ url_for('static', filename='uploads/' + file.filename) }}','audio','audio/{{ file.filename.split('.')[-1] }}')">
+                                        <img src="{{ url_for('static', filename='img/' + 'mp3.png') }}" id="{{file.filename}}"  alt="Аудіо заставка">
+                                    
+                                    </div>
                                     {% elif file.filename.endswith(('mp4', 'avi', 'mov', 'mkv')) %}
                                         <!-- Плеєр для відео -->
-                                        <video controls class="media">
+                                    <div class="tile" onclick="Show('{{ url_for('static', filename='uploads/' + file.filename) }}','video','video/{{ file.filename.split('.')[-1] }}')">
+                                  
+                                        <video aria-disabled="true">
                                             <source src="{{ url_for('static', filename='uploads/' + file.filename) }}" type="video/{{ file.filename.split('.')[-1] }}">
-                                            Ваш браузер не підтримує відео.
                                         </video>
+                                        </div>
                                     {% endif %}
-                                </li>
+                                </div>
                             {% endfor %}
                         </ul>
                     {% endif %}
