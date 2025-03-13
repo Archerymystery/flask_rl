@@ -1,86 +1,135 @@
 <!DOCTYPE html>
 <html lang="uk">
-    <head>
-        <title>Список справ</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-        <script src="{{ url_for('static', filename='jsmediatags.min.js') }}"></script> 
-        <script src="{{ url_for('static', filename='main.js') }}"></script>
-        
-    </head>
-    <body onload="ev">
-        <div class="file" id="file">
-            <img id="img" src="" >
-            <audio controls id="audio" class="media">
-                <source id="sourceA" src="" type="">
-                Ваш браузер не підтримує аудіо.
-            </audio>
-            <video controls id="video">
-                <source  id="sourceV" src="" type="">
-                Ваш браузер не підтримує відео.
-            </video>
-        </div>
-        <div class="box">
-            <h3>Список справ</h3>
-            <form action="/add" method="post" enctype="multipart/form-data">
-                <input type="text" name="title" placeholder="Нова справа" required>
-                <input type="file" name="files" multiple>
-                <button type="submit" >Додати</button>
-            </form>
-            <ul>
-                {% for task in tasks %}
-                    <li>
-                        {% if task.completed %}
-                            <a href="{{ url_for('complete_task', task_id=task.id) }}"class="completed"><i class="fa-regular fa-square-check"></i></a>
-                            <a class="completed"><span style="text-decoration: line-through">{{ task.title }}</span></a>
-                        
-                        {% else %}
-                            <a href="{{ url_for('complete_task', task_id=task.id) }}" ><i class="fa-regular fa-square"></i></a>
-                            {{ task.title }}
-                            
-                        {% endif %}
-                        
-                        <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href="{{ url_for('delete_task', task_id=task.id) }}"class="trash"><i class="fa-solid fa-trash-can"></i></a>
+  <head>
+    <title>Список справ</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"
+      integrity="sha512-YsR46MmyChktsyMMou+Bs74oCa/CDdwft7rJ5wlnmDzMj1mzqncsfJamEEf99Nk7IB0JpTMo5hS8rxB49FUktQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+  </head>
+  <body onload="ev">
+    <div class="file" id="file">
+      <img id="img" src="" />
+      <audio controls id="audio" class="media">
+        <source id="sourceA" src="" type="" />
+        Ваш браузер не підтримує аудіо.
+      </audio>
+      <video controls id="video">
+        <source id="sourceV" src="" type="" />
+        Ваш браузер не підтримує відео.
+      </video>
+    </div>
+    <div class="box">
+      <h3>Список справ</h3>
+      <form action="/add" method="post" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Нова справа" required />
+        <input type="file" name="files" multiple />
+        <button type="submit">Додати</button>
+      </form>
+      <ul>
+        {% for task in tasks %}
+        <li>
+          {% if task.completed %}
+          <a
+            href="{{ url_for('complete_task', task_id=task.id) }}"
+            class="completed"
+            ><i class="fa-regular fa-square-check"></i
+          ></a>
+          <a class="completed"
+            ><span style="text-decoration: line-through"
+              >{{ task.title }}</span
+            ></a
+          >
 
-                        {% if task.files %}
-                        <ul>
-                            {% for file in task.files %}
-                                <div class="сontainer">
+          {% else %}
+          <a href="{{ url_for('complete_task', task_id=task.id) }}"
+            ><i class="fa-regular fa-square"></i
+          ></a>
+          {{ task.title }} {% endif %}
 
-                                
-                                    <!-- <a href="{{ url_for('static', filename='uploads/' + file.filename) }}" target="_blank">Переглянути файл</a><br> -->
+          <a href="{{ url_for('edit_task', task_id=task.id) }}" class="edit"
+            ><i class="fa-solid fa-pen-to-square"></i
+          ></a>
+          <a href="{{ url_for('delete_task', task_id=task.id) }}" class="trash"
+            ><i class="fa-solid fa-trash-can"></i
+          ></a>
 
-                                    {% if file.filename.endswith(('jpg', 'jpeg', 'png', 'gif', 'webp')) %}
-                                    <div class="tile" onclick="Show('{{ url_for('static', filename='uploads/' + file.filename) }}','img')">
-                                        <img src="{{ url_for('static', filename='uploads/' + file.filename) }}"
-                                        alt="Зображення" class="media">
-                                    </div>
-                         
+          {% if task.files %}
+          <ul>
+            {% for file in task.files %}
+            <div class="сontainer">
+              <!-- <a href="{{ url_for('static', filename='uploads/' + file.filename) }}" target="_blank">Переглянути файл</a><br> -->
 
-                                    {% elif file.filename.endswith(('mp3', 'wav', 'ogg', 'flac')) %}
-                                        <!-- Плеєр для аудио -->
-                                    <div class="tile" onclick="Show('{{ url_for('static', filename='uploads/' + file.filename) }}','audio','audio/{{ file.filename.split('.')[-1] }}')">
-                                        <img src="{{ url_for('static', filename='img/' + 'mp3.png') }}" id="{{file.filename}}"  alt="Аудіо заставка">
-                                    
-                                    </div>
-                                    {% elif file.filename.endswith(('mp4', 'avi', 'mov', 'mkv')) %}
-                                        <!-- Плеєр для відео -->
-                                    <div class="tile" onclick="Show('{{ url_for('static', filename='uploads/' + file.filename) }}','video','video/{{ file.filename.split('.')[-1] }}')">
-                                  
-                                        <video aria-disabled="true">
-                                            <source src="{{ url_for('static', filename='uploads/' + file.filename) }}" type="video/{{ file.filename.split('.')[-1] }}">
-                                        </video>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+              {% if file.filename.endswith(('jpg', 'jpeg', 'png', 'gif',
+              'webp')) %}
+              <div
+                class="tile"
+                onclick="Show('{{ url_for('static', filename='uploads/' + file.filename) }}','img')"
+              >
+                <img
+                  src="{{ url_for('static', filename='uploads/' + file.filename) }}"
+                  alt="Зображення"
+                  class="media"
+                />
+              </div>
 
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </body>
+              {% elif file.filename.endswith(('mp3', 'wav', 'ogg', 'flac')) %}
+              <!-- Плеєр для аудио -->
+              <div
+                class="tile"
+                onclick="Show('{{ url_for('static', filename='uploads/' + file.filename) }}','audio','audio/{{ file.filename.split('.')[-1] }}')"
+              >
+                <img
+                  src="{{ url_for('static', filename='img/' + 'mp3.png') }}"
+                  id="{{file.filename}}"
+                  alt="Аудіо заставка"
+                  onload="loadMp3('{{ url_for('static', filename='uploads/' + file.filename) }}','{{file.filename}}')"
+                />
+                <marquee direction="left">
+                  <p class="name">asdsadsasdfdsdfhdfgjfjfjfjad</p>
+                </marquee>
+              </div>
+              {% elif file.filename.endswith(('mp4', 'avi', 'mov', 'mkv')) %}
+              <!-- Плеєр для відео -->
+              <div
+                class="tile"
+                onclick="Show('{{ url_for('static', filename='uploads/' + file.filename) }}','video','video/{{ file.filename.split('.')[-1] }}')"
+              >
+                <video aria-disabled="true">
+                  <source
+                    src="{{ url_for('static', filename='uploads/' + file.filename) }}"
+                    type="video/{{ file.filename.split('.')[-1] }}"
+                  />
+                </video>
+              </div>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <marquee
+      behavior="scroll"
+      direction="left"
+      scrollamount="5"
+      class="marquee"
+    >
+      Це довгий текст, який буде рухатися як бігуча стрічка. Це довгий текст,
+      який буде рухатися як бігуча стрічка.</marquee
+    >
+  </body>
 </html>
